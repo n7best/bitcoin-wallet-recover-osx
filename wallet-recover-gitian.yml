@@ -1,0 +1,29 @@
+---
+name: "bitcoin-wallet-recover"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "libdb4.8-dev"
+- "libcrypto++-dev"
+- "git-core"
+- "unzip"
+reference_datetime: "2011-10-10 00:00:00"
+remotes:
+- "url": "http://www.makomk.com/git/bitcoin-wallet-recover.git"
+  "dir": "bitcoin-wallet-recover"
+files:
+  dummy.txt
+script: |
+  INSTDIR="$HOME/install"
+  cd bitcoin-wallet-recover
+  sed -i "s/ -lcryptopp -ldb-4.8/ -Wl,-Bstatic -lcryptopp -ldb-4.8 -Wl,-Bdynamic -lpthread/" Makefile
+  mkdir -p $OUTDIR/src
+  cp -a . $OUTDIR/src
+  rm -rf $OUTDIR/src/.git
+  cp $OUTDIR/src/LICENSE.txt $OUTDIR
+  make
+  mkdir -p $OUTDIR/bin/$GBUILD_BITS
+  install -s wallet-recover $OUTDIR/bin/$GBUILD_BITS
